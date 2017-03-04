@@ -2242,6 +2242,11 @@ namespace Js
         return AsmJsInterpreter<X86SIMDValue>(layout).m128_value;
     }
 #endif
+#else
+    void * InterpreterStackFrame::GetAsmJsInterpreterEntryPoint(AsmJsCallStackLayout*)
+    {
+        return nullptr;
+    }
 #endif
 
     ///----------------------------------------------------------------------------

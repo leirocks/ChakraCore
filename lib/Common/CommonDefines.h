@@ -616,7 +616,7 @@
 #endif
 
 #if (defined(_M_IX86) || defined(_M_X64)) && !defined(DISABLE_JIT)
-#define ASMJS_PLAT
+//#define ASMJS_PLAT
 #endif
 
 #if defined(ASMJS_PLAT)

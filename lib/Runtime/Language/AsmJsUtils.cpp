@@ -22,10 +22,9 @@
 
 #include "RuntimeLanguagePch.h"
 
-#ifdef ASMJS_PLAT
 namespace Js
 {
-
+#ifdef ASMJS_PLAT
     bool ParserWrapper::ParseVarOrConstStatement( AsmJSParser &parser, ParseNode **var )
     {
         Assert( parser );
@@ -874,6 +873,23 @@ namespace Js
         return returnValue;
     }
 #endif
-
-}
+#else
+    int GetStackSizeForAsmJsUnboxing(class Js::ScriptFunction *)
+    {
+        return 0;
+    }
+    void * UnboxAsmJsArguments(ScriptFunction* , Var * , char * , CallInfo )
+    {
+        return nullptr;
+    }
+    Var BoxAsmJsReturnValue(ScriptFunction* , int64 , double , float , __m128 )
+    {
+        return nullptr;
+    }
+    uint *GetArgsSizesArray(ScriptFunction* )
+    {
+        return nullptr;
+    }
 #endif
+}
+

@@ -2253,6 +2253,7 @@ LABEL1:
             }
 
             ArrayBuffer* arrayBuffer = nullptr;
+#ifdef ASMJS_PLAT
 #ifdef ENABLE_WASM
             if (isWasmOnly)
             {
@@ -2264,6 +2265,7 @@ LABEL1:
             {
                 arrayBuffer = *(ArrayBuffer**)(moduleMemory + AsmJsModuleMemory::MemoryTableBeginOffset);
             }
+#endif
 
             if (!arrayBuffer || !arrayBuffer->GetBuffer())
             {

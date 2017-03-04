@@ -572,11 +572,13 @@ LowererMDArch::LowerCallArgs(IR::Instr *callInstr, ushort callFlags, Js::ArgSlot
     if (m_func->GetJITFunctionBody()->IsAsmJsMode())
     {
 #ifdef ENABLE_DEBUG_CONFIG_OPTIONS
+#ifdef ASMJS_PLAT
         if (callInstr->m_opcode == Js::OpCode::AsmJsEntryTracing)
         {
             callInstr = this->lowererMD->ChangeToHelperCall(callInstr, IR::HelperTraceAsmJsArgIn);
         }
         else
+#endif
 #endif
         {
             IR::Opnd * functionObjOpnd = callInstr->UnlinkSrc1();
@@ -1708,6 +1710,7 @@ LowererMDArch::LowerEntryInstr(IR::EntryInstr * entryInstr)
     lastPrologInstr->InsertAfter(IR::PragmaInstr::New(Js::OpCode::PrologEnd, 0, m_func));
 
 #ifdef _WIN32 // home registers
+#ifdef ASMJS_PLAT
     //
     // Now store all the arguments in the register in the stack slots
     //
@@ -1785,7 +1788,9 @@ LowererMDArch::LowerEntryInstr(IR::EntryInstr * entryInstr)
             }
         }
     }
-    else if (argSlotsForFunctionsCalled)
+    else
+#endif
+        if (argSlotsForFunctionsCalled)
     {
         this->MovArgFromReg2Stack(entryInstr, RegRCX, 1);
         this->MovArgFromReg2Stack(entryInstr, RegRDX, 2);
@@ -2038,6 +2043,7 @@ LowererMDArch::LowerExitInstr(IR::ExitInstr * exitInstr)
     // Insert RET
     IR::IntConstOpnd * intSrc = IR::IntConstOpnd::New(0, TyInt32, this->m_func);
     IR::RegOpnd *retReg = nullptr;
+#ifdef ASMJS_PLAT
     if (m_func->GetJITFunctionBody()->IsAsmJsMode() && !m_func->IsLoopBody())
     {
         switch (m_func->GetJITFunctionBody()->GetAsmJsInfo()->GetRetType())
@@ -2089,6 +2095,7 @@ LowererMDArch::LowerExitInstr(IR::ExitInstr * exitInstr)
         }
     }
     else
+#endif
     {
         retReg = IR::RegOpnd::New(nullptr, this->GetRegReturn(TyMachReg), TyMachReg, this->m_func);
     }
